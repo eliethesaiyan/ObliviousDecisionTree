@@ -3,13 +3,15 @@ class ObliviousTree:
 
     'This is an implementation of Oblvious Tree'
 
-    def __init__(self,data=[],func="C.45",autoload=False):
+    def __init__(self,data=[],func="C4.5",autoload=False):
         self.data=data 
         self.split_funct=func
         self.autoload=autoload
         self.feature_names=self.data.columns.tolist()
         self.feature_name_domains={}
         self.category_level={}
+        self.level=0
+        self.levels_nodes={}
     
 
     def load_tree(self):
@@ -34,12 +36,29 @@ class ObliviousTree:
     
     def create(self):
         is_root=True
-        for feature_name,feature_domain in self.feature_name_domains: 
+        for feature_name in self.feature_name_domains: 
+            level_list_nodes=[]
             if feature_name=="label":
                 continue
             if is_root: 
-                for domain in feature_domain:
-                    root_node=
+                root_edge_list=[] 
+                print(feature_name)
+                root_domain=self.feature_name_domains[feature_name]
+                root=Node(feature_name,self.data,100.0,root_domain)
+                for domain in root_domain: 
+                    branching_dataset=root.dataset[feature_name]=domain
+                    print(branching_dataset)
+                    braching_node=BranchingNode(feature_name,branching_dataset,branching_dataset.shape[0]/root.dataset.shape[0],domain,None)
+                    root_edge_list.append(Edge(domain,root,braching_node))
+                root.set_edge_list(root_edge_list)
+                is_root=False
+
+            self.level+=1
+
+
+                
+        print(root)
+                    
 
 
 
@@ -52,8 +71,8 @@ class Node:
         self.feature_name=feature_name
         self.probability=probability
         self.edge_list=edge_list 
-   def set_edge_list(edge_list=None):
-       self.edge_list=edge_list
+    def set_edge_list(self,edge_list=None):
+        self.edge_list=edge_list
         
 class BranchingNode(Node):
     def __init__(self,feature_name,dataset,probability,feature_domain,edge_list=None):
@@ -67,7 +86,7 @@ class CategoryNode(Node):
         self.edge_list=None
        
 class Edge:
-    def __init_(self,label,incoming_node=None,outgoing_node=None):
+    def __init__(self,label,incoming_node=None,outgoing_node=None):
         self.label=label
         self.incoming_node=incoming_node
         self.outgoing_node=outgoing_node 
